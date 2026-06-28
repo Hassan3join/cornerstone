@@ -5,8 +5,12 @@
     $isPaid = ($form && $amount > 0);
     $formId = $form->id;
     
-    // Fallback color if none set
-    $themeColor = $form->btn_color ?? '#4f46e5';
+    // Theme color: honor a custom admin color, but treat empty / the old black
+    // default (#000000) as "unset" and fall back to Cornerstone "Dark Blue Accent".
+    $rawColor = strtolower(trim($form->btn_color ?? ''));
+    $themeColor = (!empty($rawColor) && $rawColor !== '#000000' && $rawColor !== '#000')
+        ? $form->btn_color
+        : '#0D4EA3';
 @endphp
 
 @if($isPaid)
@@ -69,18 +73,18 @@
 
 <div class="dynamic-form-container mx-auto animate-entry" style="max-width: 720px;">
     
-    <div class="position-relative overflow-hidden rounded-top-5 shadow-sm" 
-         style="background: {{ $themeColor }}; background: linear-gradient(135deg, {{ $themeColor }} 0%, #1e1b4b 120%);">
+    <div class="position-relative overflow-hidden rounded-top-5 shadow-sm"
+         style="background: {{ $themeColor }}; background: linear-gradient(135deg, {{ $themeColor }} 0%, #2F5870 120%);">
         
         <div class="position-absolute top-0 end-0 bg-black opacity-10 rounded-circle" style="width: 250px; height: 250px; filter: blur(60px); transform: translate(30%, -30%);"></div>
         
         <div class="position-absolute bottom-0 start-0 bg-white opacity-10 rounded-circle" style="width: 150px; height: 150px; filter: blur(40px); transform: translate(-30%, 30%);"></div>
 
         <div class="p-5 text-center position-relative text-white">
-            <h1 class="fw-bold mb-2 display-6">{{ $form->name }}</h1>
-            
+            <h1 class="fw-bold mb-2 display-6" style="font-family: 'Cormorant Garamond', Georgia, serif; color:#fff;">{{ $form->name }}</h1>
+
             <div class="d-inline-flex align-items-center bg-white shadow-sm rounded-pill px-4 py-1 mt-3">
-                <span class="small fw-bold" style="color: {{ $themeColor }}">Application Form</span>
+                <span class="small fw-bold" style="color: {{ $themeColor }}; font-family:'Montserrat',Arial,sans-serif; letter-spacing:.5px;">Application Form</span>
                 @if($isPaid)
                     <span class="mx-2 text-muted">|</span>
                     <span class="small fw-bold text-dark">Fee: ${{ number_format($amount, 2) }}</span>

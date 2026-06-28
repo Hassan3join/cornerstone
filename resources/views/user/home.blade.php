@@ -1,359 +1,303 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('user.layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cornerstone Loan Services - Build Your Future</title>
+@section('title', 'Cornerstone Investment Group — Private Funding for Fix & Flip and Bridge Projects')
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+@push('head')
+<style>
+    /* ---------- HERO ---------- */
+    .cig-hero {
+        position: relative;
+        background: linear-gradient(135deg, #0D4EA3 0%, #2F5870 100%);
+        color: #fff;
+        overflow: hidden;
+    }
+    .cig-hero::after {
+        content: "";
+        position: absolute;
+        top: 0; right: 0;
+        width: 46%;
+        height: 100%;
+        background: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover;
+        opacity: .22;
+        z-index: 0;
+    }
+    .cig-hero .container { position: relative; z-index: 1; }
+    .cig-hero .hero-title {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        line-height: 1.08;
+        color: #fff;
+        margin-bottom: 22px;
+    }
+    .cig-hero .hero-title .accent { color: var(--cig-light); }
+    .cig-hero .hero-lead { font-size: 1.15rem; opacity: .9; max-width: 560px; line-height: 1.7; }
+    .hero-badge {
+        font-family: var(--font-ui);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: .72rem;
+        background: rgba(255,255,255,.12);
+        border: 1px solid rgba(255,255,255,.25);
+        padding: 8px 18px;
+        border-radius: 50px;
+        display: inline-block;
+        backdrop-filter: blur(4px);
+    }
+    .hero-stats .stat-num {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 2rem;
+        color: var(--cig-light);
+        line-height: 1;
+    }
+    .hero-stats .stat-label { font-family: var(--font-ui); font-size: .8rem; opacity: .8; }
 
-    <style>
-        :root {
-            /* --- CONCEPT 1 PALETTE (Blue & Gold) --- */
-            --brand-blue: #203247;
-            --brand-gold: #D4A017;
-            --brand-gold-hover: #b88b14;
-            --brand-light: #f4f6f8;
-            --text-dark: #1a1a1a;
-        }
+    /* ---------- MISSION ---------- */
+    .mission-band {
+        background: var(--cig-slate);
+        color: #fff;
+        border-radius: 16px;
+        padding: 40px 44px;
+    }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #ffffff;
-            color: var(--text-dark);
-            overflow-x: hidden;
-        }
+    /* ---------- LOAN TYPE CARDS ---------- */
+    .loan-card {
+        background: #fff;
+        border: 1px solid var(--cig-line);
+        border-top: 4px solid var(--cig-blue);
+        border-radius: 14px;
+        padding: 34px 30px;
+        height: 100%;
+        transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .loan-card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(20,50,90,.10); }
+    .loan-card .loan-icon {
+        width: 60px; height: 60px;
+        border-radius: 14px;
+        background: var(--cig-light);
+        color: var(--cig-dark);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.7rem;
+        margin-bottom: 20px;
+    }
 
-       /* --- Navbar Styling --- */
-        .navbar {
-            background: #ffffff;
-            padding: 15px 0; /* More padding for a taller navbar */
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            padding: 0;
-            margin-right: 1rem;
-        }
-        
-        /* FIX: Allow the logo container to be wider */
-        .logo-icon {
-            width: auto; 
-            height: auto; /* Let the image dictate height up to a max */
-            display: flex;
-            align-items: center;
-        }
-
-        /* FIX: Make the image larger */
-        .logo-icon img {
-            height: 65px; /* Increased from 50px to 65px for readability */
-            width: auto;
-            object-fit: contain;
-            /* This ensures it blends with the white navbar if the image is white */
-            background-color: white; 
-        }
-
-        /* Adjust Nav Links to center with the larger logo */
-        .navbar-nav .nav-link {
-            line-height: 65px; /* Matches logo height to vertically center text */
-            padding-top: 0;
-            padding-bottom: 0;
-        }
-        
-        /* Keep buttons centered */
-        .navbar-nav .btn {
-            margin-top: auto;
-            margin-bottom: auto;
-        }
-
-        .nav-link:hover {
-            color: var(--brand-gold) !important;
-        }
-
-        .btn-gold {
-            background-color: var(--brand-gold);
-            color: white;
-            font-weight: 600;
-            padding: 10px 25px;
-            border-radius: 4px;
-            border: none;
-            transition: all 0.3s;
-        }
-
-        .btn-gold:hover {
-            background-color: var(--brand-gold-hover);
-            color: white;
-            transform: translateY(-1px);
-        }
-
-        /* --- Hero Section --- */
-        .hero-section {
-            position: relative;
-            background-color: var(--brand-blue);
-            color: white;
-            padding: 100px 0;
-            overflow: hidden;
-        }
-
-        .hero-bg-image {
+    /* ---------- PROCESS ---------- */
+    .process-rail { position: relative; }
+    .process-step .step-circle {
+        width: 64px; height: 64px;
+        border-radius: 50%;
+        background: #fff;
+        border: 2px solid var(--cig-light);
+        color: var(--cig-dark);
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 1.5rem;
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 16px;
+        position: relative;
+        z-index: 2;
+        transition: all .25s ease;
+    }
+    .process-step:hover .step-circle { background: var(--cig-dark); color: #fff; border-color: var(--cig-dark); }
+    .process-step .step-label { font-family: var(--font-ui); font-weight: 600; color: var(--cig-slate); }
+    @media (min-width: 992px) {
+        .process-rail::before {
+            content: "";
             position: absolute;
-            top: 0;
-            right: 0;
-            width: 50%;
-            height: 100%;
-            /* Family/House Image */
-            background: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') no-repeat center center/cover;
-            z-index: 0;
-        }
-
-        .hero-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 60%;
-            height: 100%;
-            background: linear-gradient(90deg, var(--brand-blue) 60%, rgba(32, 50, 71, 0.9) 80%, rgba(32, 50, 71, 0) 100%);
+            top: 32px; left: 10%; right: 10%;
+            height: 2px;
+            background: var(--cig-light);
             z-index: 1;
         }
+    }
+</style>
+@endpush
 
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 600px;
-        }
+@section('content')
 
-        .hero-title {
-            font-size: 3rem;
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 20px;
-        }
+    {{-- ===================== HERO ===================== --}}
+    <header class="cig-hero">
+        <div class="container py-5">
+            <div class="row align-items-center" style="min-height: 70vh;">
+                <div class="col-lg-7 py-5">
+                    <span class="hero-badge mb-4">Private Lending &nbsp;|&nbsp; Fix &amp; Flip + Bridge Loans</span>
+                    <h1 class="hero-title mt-4">
+                        Private Funding for <br>
+                        <span class="accent">Fix &amp; Flip</span> and Bridge Projects
+                    </h1>
+                    <p class="hero-lead">
+                        Friends-and-family private lending for real-estate-backed projects, with a
+                        streamlined, relationship-based process for qualified borrowers.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3 mt-4">
+                        <a href="#apply" class="btn btn-cig-light btn-lg px-4">Apply for Funding</a>
+                        <a href="#loan-types" class="btn btn-lg px-4 text-white"
+                           style="border:2px solid rgba(255,255,255,.4);">Explore Loan Types</a>
+                    </div>
 
-        .hero-text {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 30px;
-            font-weight: 300;
-        }
-
-        /* --- Services & Process --- */
-        .services-section { padding: 80px 0; background-color: #fff; text-align: center; }
-        .section-title { color: var(--brand-blue); font-weight: 700; margin-bottom: 50px; font-size: 2rem; }
-        .service-card { padding: 20px; transition: transform 0.3s; }
-        .service-icon { font-size: 3rem; color: var(--brand-blue); margin-bottom: 20px; }
-        .service-title { font-weight: 700; color: var(--brand-gold); margin-bottom: 10px; font-size: 1.2rem; }
-
-        .process-section { padding: 80px 0; background-color: var(--brand-light); text-align: center; }
-        .process-step { position: relative; padding: 0 20px; }
-        .process-icon-box { width: 80px; height: 80px; border: 2px solid var(--brand-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; color: var(--brand-gold); font-size: 2rem; background: white; }
-        
-        .process-arrow { display: none; }
-        @media (min-width: 768px) {
-            .process-arrow { display: block; position: absolute; top: 40px; right: -20px; font-size: 1.5rem; color: #ccc; }
-        }
-
-        /* --- Forms Wrapper --- */
-        .forms-wrapper { padding: 60px 0; background: #fff; }
-        .form-card-custom { border: 1px solid #eee; border-left: 5px solid var(--brand-gold); box-shadow: 0 5px 20px rgba(0,0,0,0.05); border-radius: 8px; padding: 30px; background: white; }
-
-        /* --- Footer --- */
-        footer { background-color: var(--brand-blue); color: white; padding: 60px 0 20px 0; }
-        footer h5 { color: white; font-weight: 700; margin-bottom: 20px; }
-        footer a { color: rgba(255,255,255,0.7); text-decoration: none; display: block; margin-bottom: 10px; }
-        footer a:hover { color: var(--brand-gold); }
-    </style>
-</head>
-
-<body class="d-flex flex-column min-vh-100">
-
-    <nav class="navbar navbar-expand-lg fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="{{ route('home') }}">
-                <div class="logo-icon">
-                    <img src="{{ asset('assets/images/logo1.png') }}" alt="Cornerstone Loan Services">
-                </div>
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#how-it-works">How It Works</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-                    
-                    @auth
-                        @if(Auth::user()->role === 'admin')
-                            <li class="nav-item ms-2"><a href="{{ route('admin.dashboard') }}"
-                                    class="btn btn-sm btn-outline-danger rounded-pill">Admin</a></li>
-                        @endif
-                        <li class="nav-item ms-2">
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button class="btn btn-sm btn-outline-secondary">Logout</button>
-                            </form>
-                        </li>
-                    @else
-                        <li class="nav-item ms-3">
-                            <a href="{{ route('register') }}" class="btn btn-gold">Apply Now</a>
-                        </li>
-                        <li class="nav-item ms-2">
-                            <a href="{{ route('login') }}" class="nav-link">Login</a>
-                        </li>
-                    @endauth
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <header class="hero-section">
-        <div class="hero-bg-image"></div>
-        <div class="hero-overlay"></div>
-        
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-7">
-                    <div class="hero-content">
-                        <h1 class="hero-title">Build Your Future on a <br><span style="color: var(--brand-gold);">Solid Foundation.</span></h1>
-                        <p class="hero-text">Fast, secure, and user-friendly loan solutions tailored to your specific needs. Start building your financial dreams today.</p>
-                        <a href="{{ route('register') }}" class="btn btn-gold btn-lg px-5">Get Started</a>
+                    <div class="hero-stats d-flex gap-5 mt-5 pt-2">
+                        <div>
+                            <div class="stat-num">Fix &amp; Flip</div>
+                            <div class="stat-label">Renovation &amp; Purchase</div>
+                        </div>
+                        <div>
+                            <div class="stat-num">Bridge</div>
+                            <div class="stat-label">Short-Term Project Funding</div>
+                        </div>
+                        <div>
+                            <div class="stat-num">5 Steps</div>
+                            <div class="stat-label">Application to Closing</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="flex-grow-1">
-        
-        <section id="services" class="services-section">
-            <div class="container">
-                <h2 class="section-title">Our Services</h2>
-                <div class="row">
-                    <div class="col-md-4 mb-4">
-                        <div class="service-card">
-                            <i class="bi bi-cash-coin service-icon"></i>
-                            <h4 class="service-title">Personal Loans</h4>
-                            <p class="text-muted">Fast and secure personal loans with competitive rates tailored to your life goals.</p>
-                        </div>
+    {{-- ===================== INTRO + MISSION ===================== --}}
+    <section class="section-tight">
+        <div class="container">
+            <div class="row g-4 align-items-stretch">
+                <div class="col-lg-6">
+                    <div class="cig-card h-100 p-4 p-md-5">
+                        <span class="eyebrow">Why Cornerstone</span>
+                        <h2 class="mt-2 mb-3" style="font-size:1.9rem;">
+                            Looking for private funding for your next real estate project?
+                        </h2>
+                        <p class="text-cig-muted mb-0" style="line-height:1.8;">
+                            Cornerstone Investment Group provides friends-and-family private lending for
+                            real-estate-backed projects. Our relationship-based approach keeps the process
+                            clear and convenient for qualified borrowers — from your first application all
+                            the way through to closing.
+                        </p>
                     </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="service-card">
-                            <i class="bi bi-briefcase service-icon"></i>
-                            <h4 class="service-title">Business Loans</h4>
-                            <p class="text-muted">Expand your business with our flexible financing options designed for growth.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="service-card">
-                            <i class="bi bi-house-door service-icon"></i>
-                            <h4 class="service-title">Mortgage Loans</h4>
-                            <p class="text-muted">Find your dream home with mortgage plans that offer stability and ease.</p>
-                        </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mission-band h-100 d-flex flex-column justify-content-center">
+                        <span class="eyebrow" style="color:var(--cig-light);">Our Mission</span>
+                        <h3 class="text-white mt-2 mb-0" style="font-size:1.8rem; line-height:1.4;">
+                            Help responsible borrowers move clearly from application to closing through
+                            organized, tailored private lending.
+                        </h3>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="how-it-works" class="process-section">
-            <div class="container">
-                <h2 class="section-title">How It Works</h2>
-                <div class="row justify-content-center">
-                    <div class="col-md-3 mb-4 process-step">
-                        <div class="process-icon-box">
-                            <i class="bi bi-file-earmark-text"></i>
-                        </div>
-                        <h5 class="fw-bold">1. Submit Form</h5>
-                        <p class="small text-muted">Fill out our simple online application.</p>
-                        <i class="bi bi-chevron-right process-arrow"></i>
+    {{-- ===================== LOAN TYPES ===================== --}}
+    <section id="loan-types" class="section bg-cig-soft">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="eyebrow">What We Offer</span>
+                <h2 class="mt-2" style="font-size:2.4rem;">Loan Types We Provide</h2>
+                <p class="text-cig-muted">Flexible private capital structured around your project.</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="loan-card">
+                        <div class="loan-icon"><i class="bi bi-hammer"></i></div>
+                        <h4 class="mb-2" style="font-size:1.4rem;">Renovation Costs</h4>
+                        <p class="text-cig-muted mb-0">
+                            Fix-and-flip loans for rehab budgets and improvement expenses to bring your
+                            property to its full potential.
+                        </p>
                     </div>
-                    <div class="col-md-3 mb-4 process-step">
-                        <div class="process-icon-box">
-                            <i class="bi bi-search"></i>
-                        </div>
-                        <h5 class="fw-bold">2. Quick Review</h5>
-                        <p class="small text-muted">Our team reviews your details instantly.</p>
-                        <i class="bi bi-chevron-right process-arrow"></i>
+                </div>
+                <div class="col-md-4">
+                    <div class="loan-card">
+                        <div class="loan-icon"><i class="bi bi-house-add"></i></div>
+                        <h4 class="mb-2" style="font-size:1.4rem;">Purchase Costs</h4>
+                        <p class="text-cig-muted mb-0">
+                            Fix-and-flip loans for property acquisition needs, helping you secure the
+                            right opportunity at the right time.
+                        </p>
                     </div>
-                    <div class="col-md-3 mb-4 process-step">
-                        <div class="process-icon-box">
-                            <i class="bi bi-wallet2"></i>
-                        </div>
-                        <h5 class="fw-bold">3. Receive Funds</h5>
-                        <p class="small text-muted">Get approved and receive your funds.</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="loan-card">
+                        <div class="loan-icon"><i class="bi bi-arrow-left-right"></i></div>
+                        <h4 class="mb-2" style="font-size:1.4rem;">Bridge Loans</h4>
+                        <p class="text-cig-muted mb-0">
+                            Real-estate bridge loans for short-term project needs, keeping your timeline
+                            moving between transactions.
+                        </p>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="forms-wrapper bg-light">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12 text-center mb-4">
-                        <h3 class="fw-bold" style="color: var(--brand-blue);">Start Your Application</h3>
+    {{-- ===================== PROCESS ===================== --}}
+    <section id="process" class="section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="eyebrow">How It Works</span>
+                <h2 class="mt-2" style="font-size:2.4rem;">Our Process</h2>
+                <p class="text-cig-muted">A clear, organized path from application to closing.</p>
+            </div>
+
+            <div class="row process-rail text-center g-4">
+                @foreach([
+                    ['n' => '1', 'label' => 'Application',   'desc' => 'Submit your borrower application.'],
+                    ['n' => '2', 'label' => 'Documentation', 'desc' => 'Share supporting project details.'],
+                    ['n' => '3', 'label' => 'Underwriting',  'desc' => 'We review and assess the deal.'],
+                    ['n' => '4', 'label' => 'Approval',      'desc' => 'Terms are confirmed with you.'],
+                    ['n' => '5', 'label' => 'Closing',       'desc' => 'Funds move toward your project.'],
+                ] as $step)
+                    <div class="col-lg col-md-4 col-6 process-step">
+                        <div class="step-circle">{{ $step['n'] }}</div>
+                        <h5 class="step-label mb-1" style="font-size:1.05rem;">{{ $step['label'] }}</h5>
+                        <p class="small text-cig-muted mb-0">{{ $step['desc'] }}</p>
                     </div>
-                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
 
-                @yield('content')
+    {{-- ===================== APPLY / FORMS ===================== --}}
+    <section id="apply" class="section bg-cig-cream">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="badge-cig mb-3">Apply Here</span>
+                <h2 class="mt-2" style="font-size:2.4rem;">Request a Borrower Application</h2>
+                <p class="text-cig-muted mx-auto" style="max-width:620px;">
+                    Interested in being considered for funding? Complete an application below and our
+                    team will review your project details.
+                </p>
+            </div>
 
+            @auth
                 @if(isset($dynamicForms) && count($dynamicForms) > 0)
                     @foreach ($dynamicForms as $form)
-                        <div class="col-md-8 mx-auto mt-4">
-                            <div class="form-card-custom">
-                                <h4 class="mb-3 fw-bold">{{ $form->name ?? 'Loan Application' }}</h4>
-                                <x-dynamic-form :form="$form" />
-                            </div>
+                        <div class="mb-5">
+                            <x-dynamic-form :form="$form" />
                         </div>
                     @endforeach
                 @else
-                    <div class="text-center text-muted py-3">
-                        <p>Please log in or register to view available loan applications.</p>
+                    <div class="cig-card text-center p-5 mx-auto" style="max-width:620px;">
+                        <i class="bi bi-inbox text-cig-blue d-block mb-3" style="font-size:2.5rem;"></i>
+                        <h4>No applications are open right now</h4>
+                        <p class="text-cig-muted mb-0">Please check back soon — new funding programs are added regularly.</p>
                     </div>
                 @endif
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="mb-3">
-                       <h5 class="fw-bold">CORNERSTONE</h5>
+            @else
+                <div class="cig-card text-center p-5 mx-auto" style="max-width:620px;">
+                    <i class="bi bi-shield-lock text-cig-blue d-block mb-3" style="font-size:2.5rem;"></i>
+                    <h4 class="mb-2">Create an account to apply</h4>
+                    <p class="text-cig-muted mb-4">
+                        Sign in or register a borrower account to access and submit our application forms securely.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3 justify-content-center">
+                        <a href="{{ route('register') }}" class="btn btn-cig px-4">Register &amp; Apply</a>
+                        <a href="{{ route('login') }}" class="btn btn-cig-outline px-4">Login</a>
                     </div>
-                    <p class="small text-white-50">Providing a solid foundation for your financial needs through secure and fast loan services.</p>
                 </div>
-                <div class="col-md-2 mb-4">
-                    <h5>Contact</h5>
-                    <a href="#">Services</a>
-                    <a href="#">About</a>
-                </div>
-                <div class="col-md-2 mb-4">
-                    <h5>Links</h5>
-                    <a href="#">Privacy</a>
-                    <a href="#">Terms</a>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <h5>Subscribe</h5>
-                    <form class="d-flex">
-                        <input class="form-control me-2" type="email" placeholder="Your Email" style="border:none;">
-                        <button class="btn btn-gold" type="submit">Go</button>
-                    </form>
-                </div>
-            </div>
-            <hr style="border-color: rgba(255,255,255,0.1);">
-            <div class="text-center pt-2">
-                <p class="mb-0 small text-white-50">© 2025 Cornerstone Loan Services. All rights reserved.</p>
-            </div>
+            @endauth
         </div>
-    </footer>
+    </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+@endsection
