@@ -1,6 +1,6 @@
 <div class="sidebar">
     <div class="sidebar-brand">
-        <i class="bi bi-bank2 me-2"></i> EasyLoan
+        <img src="{{ asset('assets/images/cig-logo.png') }}" alt="Cornerstone Investment Group">
     </div>
 
     <nav class="sidebar-menu">
