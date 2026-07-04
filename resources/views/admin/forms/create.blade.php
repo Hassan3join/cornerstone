@@ -62,6 +62,9 @@
                             <button type="button" class="btn btn-outline-dark text-start" onclick="addField('textarea')">
                                 <i class="bi bi-textarea-t me-2"></i> Long Text Area
                             </button>
+                            <button type="button" class="btn btn-outline-dark text-start" onclick="addField('subheading')">
+                                <i class="bi bi-type-h1 me-2"></i> Sub Heading
+                            </button>
                         </div>
 
                         <hr>
@@ -143,8 +146,35 @@
 
         // --- 3. ADD STANDARD FIELD ---
         function addField(type) {
+            // Sub Heading is a display-only element (no input on the front page)
+            if (type === 'subheading') {
+                const shHtml = `
+                <div class="card mb-3 border border-info shadow-sm item-row" style="cursor: move; background:#f0fbff;">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <i class="bi bi-grip-vertical text-info me-2"></i>
+                                <span class="badge bg-info text-dark">SUB HEADING</span>
+                            </div>
+                            <button type="button" class="btn btn-sm text-danger" onclick="removeField(this)"><i class="bi bi-trash"></i></button>
+                        </div>
+
+                        <input type="hidden" name="items[999][type]" value="subheading">
+
+                        <div class="mb-1">
+                            <label class="small text-muted">Heading Text</label>
+                            <input type="text" name="items[999][label]" class="form-control fw-bold" value="Section Heading" placeholder="Enter sub heading...">
+                        </div>
+                    </div>
+                </div>`;
+
+                canvas.insertAdjacentHTML('beforeend', shHtml);
+                reindexFields();
+                return;
+            }
+
             let labelPlaceholder = type === 'email' ? 'Email Address' : 'Field Label';
-            
+
             // We use '999' as a placeholder index. 
             // The reindexFields() function will immediately fix it to the correct number.
             const html = `
