@@ -70,6 +70,7 @@ Route::prefix('applicants')->group(function () {
     Route::get('/reject/{id}', [ApplicantController::class, 'rejectSubmission'])->name('reject');
     Route::post('/update-score/{id}', [ApplicantController::class, 'updateScore'])->name('update_score');
     Route::get('/details/{id}', [ApplicantController::class, 'getSubmissionDetails'])->name('applicant_details');
+    Route::get('/view/{id}', [ApplicantController::class, 'showSubmission'])->name('applicant_show');
 });
 
 Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');

@@ -34,23 +34,23 @@ class ApplicantController extends Controller
         return back()->with('success', 'Application Rejected');
     }
 
-    public function getSubmissionDetails($id)
+    /**
+     * Parse a submission's stored JSON data into a clean list of
+     * ['question' => ..., 'answer' => ..., 'score' => ...] rows plus the total.
+     */
+    private function parseSubmissionData($submission): array
     {
-        $submission = Submission::with('user')->findOrFail($id);
-
-        // Parse the JSON string from the database
-        $rawData = json_decode($submission->data, true);
+        $rawData = json_decode($submission->data, true) ?? [];
         $parsedData = [];
         $totalCalculated = 0;
 
-        // Clean up the data for the frontend
         foreach ($rawData as $label => $answerString) {
             // Extract Score using Regex
             preg_match('/\(Score: (\d+)\)/', $answerString, $matches);
             $score = isset($matches[1]) ? (int) $matches[1] : 0;
 
-            // Clean Answer Text
-            $cleanAnswer = preg_replace('/\(Score: \d+\)/', '', $answerString);
+            // Clean Answer Text (strip the trailing "(Score: X)" marker)
+            $cleanAnswer = trim(preg_replace('/\(Score: \d+\)/', '', $answerString));
 
             $parsedData[] = [
                 'question' => $label,
@@ -60,11 +60,34 @@ class ApplicantController extends Controller
             $totalCalculated += $score;
         }
 
+        return ['items' => $parsedData, 'total' => $totalCalculated];
+    }
+
+    /**
+     * Full detail page for a single application with editable scores.
+     */
+    public function showSubmission($id)
+    {
+        $submission = Submission::with(['user', 'form'])->findOrFail($id);
+        $parsed = $this->parseSubmissionData($submission);
+
+        return view('admin.applicant-details', [
+            'submission' => $submission,
+            'items' => $parsed['items'],
+            'totalCalculated' => $parsed['total'],
+        ]);
+    }
+
+    public function getSubmissionDetails($id)
+    {
+        $submission = Submission::with('user')->findOrFail($id);
+        $parsed = $this->parseSubmissionData($submission);
+
         return response()->json([
             'submission_id' => $submission->id,
             'applicant_name' => $submission->user->name ?? 'Guest',
-            'items' => $parsedData,
-            'total_score' => $totalCalculated,
+            'items' => $parsed['items'],
+            'total_score' => $parsed['total'],
             // We also send the update URL so the form knows where to submit
             'update_url' => route('admin.update_score', $submission->id)
         ]);
