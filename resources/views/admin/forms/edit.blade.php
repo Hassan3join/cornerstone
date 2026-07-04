@@ -69,6 +69,9 @@
                             <button type="button" class="btn btn-outline-dark text-start" onclick="addField('textarea')">
                                 <i class="bi bi-textarea-t me-2"></i> Long Text Area
                             </button>
+                            <button type="button" class="btn btn-outline-dark text-start" onclick="addField('subheading')">
+                                <i class="bi bi-type-h1 me-2"></i> Sub Heading
+                            </button>
                         </div>
 
                         <hr>
@@ -168,7 +171,9 @@
 
         // --- 4. ADD STANDARD FIELD ---
         function addField(type) {
-            let labelPlaceholder = type === 'email' ? 'Email Address' : 'Field Label';
+            let labelPlaceholder = 'Field Label';
+            if (type === 'email') labelPlaceholder = 'Email Address';
+            else if (type === 'subheading') labelPlaceholder = 'Section Heading';
             renderFieldCard(type, labelPlaceholder);
             reindexFields(); // Update indices after adding
         }
@@ -198,6 +203,32 @@
         // --- RENDER FUNCTIONS (Updated to use window.removeField) ---
 
         function renderFieldCard(type, labelValue) {
+            // Sub Heading is a display-only element (no input on the front page)
+            if (type === 'subheading') {
+                const shHtml = `
+                <div class="card mb-3 border border-info shadow-sm item-row" style="cursor: move; background:#f0fbff;">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <i class="bi bi-grip-vertical text-info me-2"></i>
+                                <span class="badge bg-info text-dark">SUB HEADING</span>
+                            </div>
+                            <button type="button" class="btn btn-sm text-danger" onclick="removeField(this)"><i class="bi bi-trash"></i></button>
+                        </div>
+
+                        <input type="hidden" name="items[999][type]" value="subheading">
+
+                        <div class="mb-1">
+                            <label class="small text-muted">Heading Text</label>
+                            <input type="text" name="items[999][label]" class="form-control fw-bold" value="${labelValue}" placeholder="Enter sub heading...">
+                        </div>
+                    </div>
+                </div>`;
+
+                canvas.insertAdjacentHTML('beforeend', shHtml);
+                return;
+            }
+
             // Note: I removed the explicit [itemCount] from names here because reindexFields() will fix it immediately
             const html = `
             <div class="card mb-3 border border-secondary shadow-sm item-row" style="cursor: move;">

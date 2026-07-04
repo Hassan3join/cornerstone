@@ -63,6 +63,11 @@ class FormSubmissionController extends Controller
             }
 
             foreach ($form->items as $item) {
+                // Sub Heading is a display-only element, it has no input to collect
+                if ($item->type === 'subheading') {
+                    continue;
+                }
+
                 $fieldName = 'field_' . $item->id;
                 $inputValue = $request->input($fieldName); // Can be String or Array (for checkbox)
 

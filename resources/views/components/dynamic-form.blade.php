@@ -100,6 +100,14 @@
         <div class="p-4 p-md-5">
             
             @foreach($form->items as $item)
+                {{-- SUB HEADING: display-only section title, not an input --}}
+                @if($item->type === 'subheading')
+                    <div class="mb-4 mt-2 pb-2 border-bottom">
+                        <h4 class="fw-bold text-dark mb-0" style="font-family: 'Cormorant Garamond', Georgia, serif;">{{ $item->label }}</h4>
+                    </div>
+                    @continue
+                @endif
+
                 <div class="mb-5 group-container">
                     <div class="d-flex align-items-center mb-3">
                         <label class="form-label fw-bold text-dark mb-0 fs-5">{{ $item->label }}</label>
