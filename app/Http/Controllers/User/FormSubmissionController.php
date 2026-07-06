@@ -75,13 +75,16 @@ class FormSubmissionController extends Controller
                 if ($item->type === 'question' && $item->question) {
                     $q = $item->question;
 
+                    // Key by the full question title (the stored label may be truncated)
+                    $label = $q->title;
+
                     // CASE A: TEXT QUESTION
                     if ($q->type === 'text') {
                         if (!empty($inputValue)) {
                             $totalScore += $q->score; // Add base score
-                            $submissionData[$item->label] = $inputValue . " (Score: {$q->score})";
+                            $submissionData[$label] = $inputValue . " (Score: {$q->score})";
                         } else {
-                            $submissionData[$item->label] = "No Answer";
+                            $submissionData[$label] = "No Answer";
                         }
                     }
                     // CASE B: RADIO (Single ID)
@@ -89,7 +92,7 @@ class FormSubmissionController extends Controller
                         $option = QuestionOption::find($inputValue);
                         if ($option) {
                             $totalScore += $option->score;
-                            $submissionData[$item->label] = $option->option_text . " (Score: {$option->score})";
+                            $submissionData[$label] = $option->option_text . " (Score: {$option->score})";
                         }
                     }
                     // CASE C: CHECKBOX (Array of IDs)
@@ -99,7 +102,7 @@ class FormSubmissionController extends Controller
                         $names = $options->pluck('option_text')->implode(', ');
 
                         $totalScore += $sum;
-                        $submissionData[$item->label] = $names . " (Score: {$sum})";
+                        $submissionData[$label] = $names . " (Score: {$sum})";
                     }
                 }
                 // 2. STANDARD FORM FIELDS (Created in builder, not bank)

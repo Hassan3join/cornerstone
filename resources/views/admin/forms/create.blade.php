@@ -74,7 +74,7 @@
                             <select id="questionSelect" class="form-select">
                                 <option value="">-- Select from Bank --</option>
                                 @foreach($questions as $q)
-                                    <option value="{{ $q->id }}">{{ Str::limit($q->title, 30) }}</option>
+                                    <option value="{{ $q->id }}" data-title="{{ $q->title }}">{{ Str::limit($q->title, 30) }}</option>
                                 @endforeach
                             </select>
                             <button type="button" class="btn btn-primary" onclick="addQuestion()">Add</button>
@@ -205,7 +205,9 @@
         function addQuestion() {
             const select = document.getElementById('questionSelect');
             const questionId = select.value;
-            const questionText = select.options[select.selectedIndex].text;
+            const selectedOption = select.options[select.selectedIndex];
+            // Use the full title (data-title), not the truncated dropdown text.
+            const questionText = selectedOption.getAttribute('data-title') || selectedOption.text;
 
             if (!questionId) return alert('Please select a question first');
 

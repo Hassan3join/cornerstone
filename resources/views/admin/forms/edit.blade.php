@@ -81,7 +81,7 @@
                             <select id="questionSelect" class="form-select">
                                 <option value="">-- Select from Bank --</option>
                                 @foreach($questions as $q)
-                                    <option value="{{ $q->id }}">{{ Str::limit($q->title, 30) }}</option>
+                                    <option value="{{ $q->id }}" data-title="{{ $q->title }}">{{ Str::limit($q->title, 30) }}</option>
                                 @endforeach
                             </select>
                             <button type="button" class="btn btn-primary" onclick="addQuestion()">Add</button>
@@ -124,6 +124,11 @@
         // --- 2. INITIALIZATION: LOAD EXISTING ITEMS ---
         const existingItems = @json($form->items);
 
+        // Map of question id -> full title, used to repair older items whose
+        // stored label was the truncated dropdown text.
+        const questionTitles = {};
+        @json($questions).forEach(q => { questionTitles[q.id] = q.title; });
+
         if (existingItems.length === 0) {
             emptyMsg.style.display = 'block';
         } else {
@@ -132,7 +137,8 @@
 
             existingItems.forEach(item => {
                 if (item.type === 'question') {
-                    renderQuestionCard(item.question_id, item.label);
+                    // Prefer the full question title over the (possibly truncated) stored label
+                    renderQuestionCard(item.question_id, questionTitles[item.question_id] || item.label);
                 } else {
                     renderFieldCard(item.type, item.label);
                 }
@@ -182,7 +188,9 @@
         function addQuestion() {
             const select = document.getElementById('questionSelect');
             const questionId = select.value;
-            const questionText = select.options[select.selectedIndex].text;
+            const selectedOption = select.options[select.selectedIndex];
+            // Use the full title (data-title), not the truncated dropdown text.
+            const questionText = selectedOption.getAttribute('data-title') || selectedOption.text;
 
             if (!questionId) return alert('Please select a question first');
 
