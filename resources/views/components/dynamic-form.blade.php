@@ -108,9 +108,16 @@
                     @continue
                 @endif
 
+                @php
+                    // Scorable questions store the (possibly truncated) dropdown text as the
+                    // label; always prefer the linked question's full title when available.
+                    $displayLabel = ($item->type === 'question' && $item->question)
+                        ? $item->question->title
+                        : $item->label;
+                @endphp
                 <div class="mb-5 group-container">
                     <div class="d-flex align-items-center mb-3">
-                        <label class="form-label fw-bold text-dark mb-0 fs-5">{{ $item->label }}</label>
+                        <label class="form-label text-dark mb-0 fs-5">{{ $displayLabel }}</label>
                         @if($item->type !== 'checkbox') <span class="text-danger ms-1 small">*</span> @endif
                     </div>
 
