@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Submission;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ApplicantController extends Controller
 {
@@ -76,6 +78,35 @@ class ApplicantController extends Controller
             'items' => $parsed['items'],
             'totalCalculated' => $parsed['total'],
         ]);
+    }
+
+    /**
+     * Stream a nicely designed PDF of a single application submission.
+     */
+    public function downloadPdf($id)
+    {
+        $submission = Submission::with(['user', 'form'])->findOrFail($id);
+        $parsed = $this->parseSubmissionData($submission);
+
+        // Embed the brand logo as a base64 data URI so DomPDF never has to
+        // hit the filesystem/network at render time (cPanel-safe).
+        $logoPath = public_path('assets/images/cig-logo-pdf.png');
+        $logoData = is_file($logoPath)
+            ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath))
+            : null;
+
+        $pdf = Pdf::loadView('admin.applicant-pdf', [
+            'submission' => $submission,
+            'items' => $parsed['items'],
+            'totalCalculated' => $parsed['total'],
+            'logoData' => $logoData,
+            'generatedAt' => now(),
+        ])->setPaper('a4', 'portrait');
+
+        $applicant = Str::slug($submission->user->name ?? 'guest');
+        $fileName = "application-{$applicant}-{$submission->id}.pdf";
+
+        return $pdf->download($fileName);
     }
 
     public function getSubmissionDetails($id)

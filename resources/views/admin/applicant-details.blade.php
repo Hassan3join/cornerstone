@@ -62,10 +62,14 @@
         }
     </style>
 
-    {{-- Back link --}}
-    <div class="mb-3">
+    {{-- Back link + PDF download --}}
+    <div class="mb-3 d-flex justify-content-between align-items-center">
         <a href="{{ route('admin.applicants') }}" class="text-decoration-none text-muted small fw-bold">
             <i class="bi bi-arrow-left me-1"></i> Back to Applicants
+        </a>
+        <a href="{{ route('admin.applicant_pdf', $submission->id) }}"
+           class="btn btn-sm btn-primary" style="background:#4f46e5; border-color:#4f46e5;">
+            <i class="bi bi-file-earmark-pdf me-1"></i> Download PDF
         </a>
     </div>
 
