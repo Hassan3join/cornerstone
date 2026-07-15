@@ -31,6 +31,11 @@
                                     <i class="bi bi-eye me-1"></i> View Answers
                                 </a>
 
+                                <a href="{{ route('admin.applicant_pdf', $sub->id) }}"
+                                   class="btn btn-sm btn-primary" style="background:#4f46e5; border-color:#4f46e5;">
+                                    <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                                </a>
+
                                 @if ($sub->status == 'pending')
                                     <a href="{{ route('admin.approve', $sub->id) }}" class="btn btn-sm btn-success">Accept</a>
                                     <a href="{{ route('admin.reject', $sub->id) }}" class="btn btn-sm btn-danger">Reject</a>
