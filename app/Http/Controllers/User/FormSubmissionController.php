@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ApplicationSubmittedMail;
 use App\Models\Form;
 use App\Models\QuestionOption;
 use App\Models\Submission;
 use App\Models\Transaction;
+use App\Services\ApplicationPdfService;
 use App\Services\StripeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class FormSubmissionController extends Controller
 {
@@ -35,7 +38,7 @@ class FormSubmissionController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-    public function submit(Request $request, $formId, StripeService $stripe)
+    public function submit(Request $request, $formId, StripeService $stripe, ApplicationPdfService $pdfService)
     {
         try {
             $form = Form::with('items.question.options')->findOrFail($formId);
@@ -131,6 +134,13 @@ class FormSubmissionController extends Controller
                     'status' => 'succeeded'
                 ]);
             }
+
+            $submission->load(['user', 'form']);
+            $pdfContent = $pdfService->generatePdf($submission);
+            $pdfFileName = $pdfService->getFileName($submission);
+            $recipient = env('ADMIN_EMAIL', config('mail.from.address'));
+
+            Mail::to($recipient)->send(new ApplicationSubmittedMail($submission, $pdfContent, $pdfFileName));
 
             return back()->with('success', 'Application Submitted Successfully!');
         } catch (\Exception $e) {
